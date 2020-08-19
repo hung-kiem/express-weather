@@ -34,13 +34,13 @@ app.get('/', (req, res, next) => {
         console.log("------- Get data from cache --------");
         console.log(weatherCache);
         console.log("------------------------------------");
-        res.send(weatherCache);
+        res.send("------- Get data from cache --------" + weatherCache);
     }
     else {
-        console.log("(------- Get new data -------");
+        console.log("------- Get new data -------");
         getWeatherData(cityCode, apiKey);
         console.log("------------------------------------");
-        res.send(myCache.get("myWeather"));
+        res.send("------- Get new data -------" + myCache.get("myWeather"));
     }
 });
 var port = process.env.PORT || 8080;

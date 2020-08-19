@@ -37,9 +37,10 @@ app.get('/', (req: Request, res: Response, next: NextFunction) => {
         console.log("------------------------------------");
         res.send(weatherCache);
     } else {
-        console.log("(------- Get new data -------");
+        console.log("------- Get new data -------");
         getWeatherData(cityCode, apiKey);
         console.log("------------------------------------");
+        res.send("------- Get new data -------");
         res.send(myCache.get("myWeather"));
     }
 });
