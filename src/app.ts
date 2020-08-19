@@ -43,4 +43,5 @@ app.get('/', (req: Request, res: Response, next: NextFunction) => {
     res.send('Hello world');
 });
 
-app.listen(8080, () => console.log('Server is running on port 8080'));
+var port = process.env.PORT || 8080;
+app.listen(port, () => console.log('Server is running on port 8080'));
