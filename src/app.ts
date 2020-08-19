@@ -35,12 +35,13 @@ app.get('/', (req: Request, res: Response, next: NextFunction) => {
         console.log("------- Get data from cache --------");
         console.log(weatherCache);
         console.log("------------------------------------");
+        res.send(weatherCache);
     } else {
         console.log("(------- Get new data -------");
         getWeatherData(cityCode, apiKey);
         console.log("------------------------------------");
+        res.send(myCache.get("myWeather"));
     }
-    res.send('Hello world');
 });
 
 var port = process.env.PORT || 8080;
