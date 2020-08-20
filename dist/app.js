@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const node_fetch_1 = __importDefault(require("node-fetch"));
 const app = express_1.default();
+const url = require('url');
 const NodeCache = require('node-cache');
 const myCache = new NodeCache();
 const getWeatherData = (cityId, apiKey) => {
@@ -27,20 +28,27 @@ const getWeatherData = (cityId, apiKey) => {
     });
 };
 app.get('/', (req, res, next) => {
-    const cityCode = '1581130';
+    // const cityCode = '1581130';
     const apiKey = '0322db4d41fcfc67ea36b1718351ca82';
     const weatherCache = myCache.get("myWeather");
-    if (!!weatherCache) {
-        console.log("------- Get data from cache --------");
-        console.log(weatherCache);
-        console.log("------------------------------------");
-        res.send("------- Get data from cache --------" + weatherCache);
+    const urlParts = url.parse(req.url, true);
+    const cityCode = urlParts.query.cityCode;
+    if (!!cityCode) {
+        if (!!weatherCache) {
+            console.log("------- Get data from cache --------");
+            console.log(weatherCache);
+            console.log("------------------------------------");
+            res.send(weatherCache);
+        }
+        else {
+            console.log("------- Get new data -------");
+            getWeatherData(cityCode, apiKey);
+            console.log("------------------------------------");
+            res.send(myCache.get("myWeather"));
+        }
     }
     else {
-        console.log("------- Get new data -------");
-        getWeatherData(cityCode, apiKey);
-        console.log("------------------------------------");
-        res.send("------- Get new data -------" + myCache.get("myWeather"));
+        res.send("You are missing cityCode!!!");
     }
 });
 var port = process.env.PORT || 8080;

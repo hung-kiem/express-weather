@@ -3,6 +3,7 @@ import fetch from 'node-fetch'
 
 const app: Application = express();
 
+const url = require('url');
 const NodeCache = require('node-cache');
 const myCache = new NodeCache();
 
@@ -28,20 +29,25 @@ const getWeatherData = (cityId: string, apiKey: string) => {
 }
 
 app.get('/', (req: Request, res: Response, next: NextFunction) => {
-    const cityCode = '1581130';
+    // const cityCode = '1581130';
     const apiKey = '0322db4d41fcfc67ea36b1718351ca82';
     const weatherCache = myCache.get("myWeather");
-    if (!!weatherCache) {
-        console.log("------- Get data from cache --------");
-        console.log(weatherCache);
-        console.log("------------------------------------");
-        res.send(weatherCache);
+    const urlParts = url.parse(req.url, true);
+    const cityCode = urlParts.query.cityCode;
+    if (!!cityCode) {
+        if (!!weatherCache) {
+            console.log("------- Get data from cache --------");
+            console.log(weatherCache);
+            console.log("------------------------------------");
+            res.send(weatherCache);
+        } else {
+            console.log("------- Get new data -------");
+            getWeatherData(cityCode, apiKey);
+            console.log("------------------------------------");
+            res.send(myCache.get("myWeather"));
+        }
     } else {
-        console.log("------- Get new data -------");
-        getWeatherData(cityCode, apiKey);
-        console.log("------------------------------------");
-        res.send("------- Get new data -------");
-        res.send(myCache.get("myWeather"));
+        res.send("You are missing cityCode!!!")
     }
 });
 
