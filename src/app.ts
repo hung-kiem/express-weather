@@ -33,8 +33,12 @@ app.get('/', (req: Request, res: Response, next: NextFunction) => {
     const apiKey = '0322db4d41fcfc67ea36b1718351ca82';
     const weatherCache = myCache.get("myWeather");
     const urlParts = url.parse(req.url, true);
-    const cityCode = urlParts.query.cityCode;
+    let cityCode = urlParts.query.cityCode;
     if (!!cityCode) {
+        console.log(cityCode);
+    } else {
+        cityCode = '1581130';
+    }
         if (!!weatherCache) {
             console.log("------- Get data from cache --------");
             console.log(weatherCache);
@@ -46,9 +50,6 @@ app.get('/', (req: Request, res: Response, next: NextFunction) => {
             console.log("------------------------------------");
             res.send(myCache.get("myWeather"));
         }
-    } else {
-        res.send("You are missing cityCode!!!")
-    }
 });
 
 var port = process.env.PORT || 8080;
