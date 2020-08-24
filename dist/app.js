@@ -4,51 +4,31 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const node_fetch_1 = __importDefault(require("node-fetch"));
+const weather_1 = require("./weather");
+const weather_2 = require("./weather");
 const app = express_1.default();
 const url = require('url');
-const NodeCache = require('node-cache');
-const myCache = new NodeCache();
-const getWeatherData = (cityId, apiKey) => {
-    let url = 'http://api.openweathermap.org/data/2.5/weather?id=' + cityId + '&APPID=' + apiKey + '';
-    node_fetch_1.default(url)
-        .then(function (response) {
-        if (response.status !== 200) {
-            console.log('Error code ' + response.status);
-            return;
-        }
-        // parse response data
-        response.json().then(data => {
-            console.log(data);
-            myCache.set("myWeather", data, 20); // .set(key, value, timeExpire-seconds)
-        });
-    })
-        .catch((error) => {
-        console.log('Error ' + error);
-    });
-};
 app.get('/', (req, res, next) => {
-    // const cityCode = '1581130';
-    const apiKey = '0322db4d41fcfc67ea36b1718351ca82';
-    const weatherCache = myCache.get("myWeather");
+    const weatherCache = weather_1.myCache.get("myWeather");
     const urlParts = url.parse(req.url, true);
-    const cityCode = urlParts.query.cityCode;
+    let cityCode = urlParts.query.cityCode;
     if (!!cityCode) {
-        if (!!weatherCache) {
-            console.log("------- Get data from cache --------");
-            console.log(weatherCache);
-            console.log("------------------------------------");
-            res.send(weatherCache);
-        }
-        else {
-            console.log("------- Get new data -------");
-            getWeatherData(cityCode, apiKey);
-            console.log("------------------------------------");
-            res.send(myCache.get("myWeather"));
-        }
+        console.log(cityCode);
     }
     else {
-        res.send("You are missing cityCode!!!");
+        cityCode = '1581130';
+    }
+    if (!!weatherCache) {
+        console.log("------- Get data from cache --------");
+        console.log(weatherCache);
+        console.log("------------------------------------");
+        res.send(weatherCache);
+    }
+    else {
+        console.log("------- Get new data -------");
+        weather_2.getWeatherData(cityCode);
+        console.log("------------------------------------");
+        res.send(weather_1.myCache.get("myWeather"));
     }
 });
 var port = process.env.PORT || 8080;
