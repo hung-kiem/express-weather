@@ -5,7 +5,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const weather_1 = require("./weather");
-const weather_2 = require("./weather");
 const app = express_1.default();
 const url = require('url');
 app.get('/', (req, res, next) => {
@@ -19,15 +18,10 @@ app.get('/', (req, res, next) => {
         cityCode = '1581130';
     }
     if (!!weatherCache) {
-        console.log("------- Get data from cache --------");
-        console.log(weatherCache);
-        console.log("------------------------------------");
         res.send(weatherCache);
     }
     else {
-        console.log("------- Get new data -------");
-        weather_2.getWeatherData(cityCode);
-        console.log("------------------------------------");
+        weather_1.getWeatherData(cityCode);
         res.send(weather_1.myCache.get("myWeather"));
     }
 });
